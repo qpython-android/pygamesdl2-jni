@@ -116,11 +116,12 @@ int start_python(void) {
 
 		"logfile = '%s' % (log_path,)\n" \
 		"sys.path[:] = [ \n" \
-		"    argument, \n" \
-		"    private + '/lib/python27.zip', \n" \
+        "    private + '/lib/python2.7/site-packages/', \n" \
 		"    private + '/lib/python2.7/', \n" \
+		"    private + '/lib/python27.zip', \n" \
+        "    private + '/lib/notebook.zip', \n" \
+        "    private + '/lib/python2.7/qpyutil.zip', \n" \
 		"    private + '/lib/python2.7/lib-dynload/', \n" \
-		"    private + '/lib/python2.7/site-packages/', \n" \
 		"    public  + '/lib/python2.7/site-packages/', \n"
 		"    argument ]\n" \
         "import androidembed\n" \
@@ -131,7 +132,7 @@ int start_python(void) {
         "        s = s.replace(\"\\0\", \"\\\\0\")\n" \
         "        s = self.buffer + s\n" \
         "        lines = s.split(\"\\n\")\n" \
-		"        output = open(logfile,\"a\")\n" \
+		"        output = open(logfile,\"w\")\n" \
         "        for l in lines[:-1]:\n" \
         "            androidembed.log(l)\n" \
 		"            output.write(\"%s\\n\" % (l,))\n" \
