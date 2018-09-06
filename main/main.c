@@ -67,10 +67,17 @@ int file_exists(const char * filename) {
 
 int start_python(void) {
     char *env_argument = NULL;
+	char *pri_argument = NULL;
+    char *main_py = NULL;
+
+
     int ret = 0;
     FILE *fd;
 
+    main_py = getenv("ANDROID_MAIN");
+
     env_argument = getenv("ANDROID_ARGUMENT");
+	pri_argument = getenv("ANDROID_PRIVATE");
     setenv("ANDROID_APP_PATH", env_argument, 1);
 
     /* The / is required to stop python from doing a search that causes
@@ -81,7 +88,7 @@ int start_python(void) {
 
     char *args[] = { python, NULL };
 
-	LOG("Initialize Python for Android");
+	LOG("Initialize QPython pygame for Android");
 
     //setenv("PYTHONVERBOSE", "2", 1);
     Py_SetProgramName(args[0]);
@@ -101,15 +108,21 @@ int start_python(void) {
      */
     PyRun_SimpleString(
         "import sys, posix\n" \
+		"sys.platform='linux2'\n" \
 		"private = posix.environ['ANDROID_PRIVATE']\n" \
+		"public = posix.environ['ANDROID_PUBLIC']\n" \
 		"argument = posix.environ['ANDROID_ARGUMENT']\n" \
+        "log_path = posix.environ['ANDROID_LOG']\n" \
+
+		"logfile = '%s' % (log_path,)\n" \
 		"sys.path[:] = [ \n" \
 		"    argument, \n" \
 		"    private + '/lib/python27.zip', \n" \
 		"    private + '/lib/python2.7/', \n" \
 		"    private + '/lib/python2.7/lib-dynload/', \n" \
 		"    private + '/lib/python2.7/site-packages/', \n" \
-		"    ]\n" \
+		"    public  + '/lib/python2.7/site-packages/', \n"
+		"    argument ]\n" \
         "import androidembed\n" \
         "class LogFile(object):\n" \
         "    def __init__(self):\n" \
@@ -118,18 +131,20 @@ int start_python(void) {
         "        s = s.replace(\"\\0\", \"\\\\0\")\n" \
         "        s = self.buffer + s\n" \
         "        lines = s.split(\"\\n\")\n" \
+		"        output = open(logfile,\"a\")\n" \
         "        for l in lines[:-1]:\n" \
         "            androidembed.log(l)\n" \
+		"            output.write(\"%s\\n\" % (l,))\n" \
+		"        output.close()\n" \
         "        self.buffer = lines[-1]\n" \
         "    def flush(self):\n" \
         "        return\n" \
         "sys.stdout = sys.stderr = LogFile()\n" \
-		"import site; print site.getsitepackages()\n"\
-		"print '3...'\n"\
-		"print '2...'\n"\
-		"print '1...'\n"\
-		"print 'Android path', sys.path\n" \
-        "print 'Android bootstrap done. __name__ is', __name__\n"\
+		"import site; import qpy #print site.getsitepackages()\n"\
+		"#print '2...'\n"\
+		"#print '1...'\n"\
+		"#print 'Android path', sys.path\n" \
+        "#print 'Android bootstrap done. __name__ is', __name__\n"\
 		"import pygame_sdl2\n"\
 		"pygame_sdl2.import_as_pygame()\n"\
     	"");
@@ -141,22 +156,18 @@ int start_python(void) {
 
 	/* search the initial main.py
 	 */
-	char *main_py = "main.pyo";
-	if ( file_exists(main_py) == 0 ) {
-		if ( file_exists("main.py") )
-			main_py = "main.py";
-		else
-			main_py = NULL;
-	}
+    if (! file_exists(main_py) )
+
+        main_py = NULL;
 
 	if ( main_py == NULL ) {
-		LOG("No main.pyo / main.py found.");
+		LOG("No main script found.");
 		return 1;
 	}
 
     fd = fopen(main_py, "r");
     if ( fd == NULL ) {
-        LOG("Open the main.py(o) failed");
+        LOG("Open the main.py failed");
         return 1;
     }
 
@@ -176,7 +187,7 @@ int start_python(void) {
 	Py_Finalize();
     fclose(fd);
 
-    LOG("Python for android ended.");
+    LOG("QPython for android ended.");
     return ret;
 }
 
@@ -192,8 +203,8 @@ void init_environ() {
 	environ = calloc(50, sizeof(char *));
 }
 
-
-JNIEXPORT void JNICALL JAVA_EXPORT_NAME(PythonSDLActivity_nativeSetEnv) (
+//JNIEXPORT void JNICALL JAVA_EXPORT_NAME(PythonSDLActivity_nativeSetEnv) (
+JNIEXPORT void JNICALL Java_org_renpy_android_PythonSDLActivity_nativeSetEnv (
 		JNIEnv*  env, jobject thiz,
 		jstring variable,
 		jstring value) {
