@@ -196,7 +196,20 @@ int start_python(void) {
 void init_environ() {
 	setenv("TEST_ENV_VAR", "The test worked.", 1);
 
-	if (*environ) {
+	JNIEnv* env = (JNIEnv*) SDL_AndroidGetJNIEnv();
+	jobject activity = (jobject) SDL_AndroidGetActivity();
+	jclass clazz = (*env)->GetObjectClass(env, activity);
+	jmethodID method_id = (*env)->GetMethodID(env, clazz, "initEnviron", "()V");
+	(*env)->CallVoidMethod(env, activity, method_id);
+	(*env)->DeleteLocalRef(env, activity);
+	(*env)->DeleteLocalRef(env, clazz);
+
+    char *env_argument;
+    env_argument = getenv("ANDROID_ARGUMENT");
+
+    chdir(env_argument);
+
+    if (*environ) {
 		return;
 	}
 
