@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class com_googlecode_android_scripting_Exec */
 
-#ifndef _Included_com_googlecode_android_scripting_Exec
-#define _Included_com_googlecode_android_scripting_Exec
+#ifndef _Included_org_qpython_qpysdk_Exec
+#define _Included_org_qpython_qpysdk_Exec
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,30 +12,30 @@ extern "C" {
  * Method:    createSubprocess
  * Signature: (Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;[I)Ljava/io/FileDescriptor;
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_android_1scripting_Exec_createSubprocess
+JNIEXPORT jobject JNICALL Java_org_qpython_qpysdk_Exec_createSubprocess
   (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray, jstring, jintArray);
 
 /*
- * Class:     com_googlecode_android_scripting_Exec
+ * Class:     org_qpython_qpysdk_Exec
  * Method:    setPtyWindowSize
  * Signature: (Ljava/io/FileDescriptor;IIII)V
  */
-JNIEXPORT void JNICALL Java_com_googlecode_android_1scripting_Exec_setPtyWindowSize
+JNIEXPORT void JNICALL Java_org_qpython_qpysdk_Exec_setPtyWindowSize
   (JNIEnv *, jclass, jobject, jint, jint, jint, jint);
 
 /*
- * Class:     com_googlecode_android_scripting_Exec
+ * Class:     org_qpython_qpysdk_Exec
  * Method:    waitFor
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_waitFor
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_waitFor
   (JNIEnv *, jclass, jint);
 
 
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_nativeInit
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_nativeInit
         ( JNIEnv*  env, jobject thiz );
 
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_nativeSetEnv
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_nativeSetEnv
         (JNIEnv*  env, jobject thiz, jstring j_name, jstring j_value);
 
 
