@@ -120,7 +120,7 @@ int JNU_GetFdFromFileDescriptor(JNIEnv* env, jobject fileDescriptor) {
   return env->GetIntField(fileDescriptor, descriptor);
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_android_1scripting_Exec_createSubprocess(
+JNIEXPORT jobject JNICALL Java_org_qpython_qpysdk_Exec_createSubprocess(
     JNIEnv* env, jclass clazz, jstring cmd, jobjectArray argArray, jobjectArray varArray,
     jstring workingDirectory,
     jintArray processIdArray) {
@@ -178,7 +178,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_android_1scripting_Exec_createSubp
   return result;
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_android_1scripting_Exec_setPtyWindowSize(
+JNIEXPORT void JNICALL Java_org_qpython_qpysdk_Exec_setPtyWindowSize(
     JNIEnv* env, jclass clazz, jobject fileDescriptor, jint row, jint col, jint xpixel,
     jint ypixel) {
   struct winsize sz;
@@ -193,7 +193,7 @@ JNIEXPORT void JNICALL Java_com_googlecode_android_1scripting_Exec_setPtyWindowS
   ioctl(fd, TIOCSWINSZ, &sz);
 }
 
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_waitFor(JNIEnv* env, jclass clazz, jint procId) {
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_waitFor(JNIEnv* env, jclass clazz, jint procId) {
   int status;
   waitpid(procId, &status, 0);
   int result = 0;
@@ -203,7 +203,7 @@ JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_waitFor(JNIEn
   return result;
 }
 
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_nativeInit
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_nativeInit
         ( JNIEnv*  env, jobject thiz )
         {
           int argc = 1;
@@ -211,7 +211,7 @@ JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_nativeInit
           main( argc, argv );
         };
 
-JNIEXPORT jint JNICALL Java_com_googlecode_android_1scripting_Exec_nativeSetEnv
+JNIEXPORT jint JNICALL Java_org_qpython_qpysdk_Exec_nativeSetEnv
         (JNIEnv*  env, jobject thiz, jstring j_name, jstring j_value) {
 
   jboolean iscopy;
