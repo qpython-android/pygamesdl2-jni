@@ -140,12 +140,13 @@ int start_python(void) {
         "        self.buffer = lines[-1]\n" \
         "    def flush(self):\n" \
         "        return\n" \
-        "sys.stdout = sys.stderr = LogFile()\n" \
-		"import site; import qpy #print site.getsitepackages()\n"\
+        "sys.stdout = sys.stderr = LogFile  ()\n" \
+		"import time,site,qpy #print site.getsitepackages()\n"\
 		"#print '2...'\n"\
 		"#print '1...'\n"\
 		"#print 'Android path', sys.path\n" \
         "#print 'Android bootstrap done. __name__ is', __name__\n"\
+        "print '# %s/%s started: %s' % (argument, posix.environ['ANDROID_MAIN'], time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))\n"
 		"import pygame_sdl2\n"\
 		"pygame_sdl2.import_as_pygame()\n"\
     	"");
