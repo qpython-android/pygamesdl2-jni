@@ -90,7 +90,7 @@ int start_python(void) {
 
 	LOG("Initialize QPython pygame for Android");
 
-    //setenv("PYTHONVERBOSE", "2", 1);
+    setenv("PYTHONVERBOSE", "2", 1);
     Py_SetProgramName(args[0]);
     Py_Initialize();
     PySys_SetArgvEx(1, args, 0);
@@ -107,49 +107,44 @@ int start_python(void) {
      * replace sys.path with our path
      */
     PyRun_SimpleString(
-        "import sys, posix\n" \
-		"sys.platform='linux2'\n" \
-		"private = posix.environ['ANDROID_PRIVATE']\n" \
-		"public = posix.environ['ANDROID_PUBLIC']\n" \
-		"argument = posix.environ['ANDROID_ARGUMENT']\n" \
-        "log_path = posix.environ['ANDROID_LOG']\n" \
+    "import sys, posix\n" \
+    "sys.platform='linux2'\n" \
+    "private = posix.environ['ANDROID_PRIVATE']\n" \
+    "public = posix.environ['ANDROID_PUBLIC']\n" \
+    "argument = posix.environ['ANDROID_ARGUMENT']\n" \
+    "logfile = posix.environ['ANDROID_LOG']\n" \
 
-		"logfile = '%s' % (log_path,)\n" \
-		"sys.path[:] = [ \n" \
-        "    private + '/lib/python2.7/site-packages/', \n" \
-		"    private + '/lib/python2.7/', \n" \
-		"    private + '/lib/python27.zip', \n" \
-        "    private + '/lib/notebook.zip', \n" \
-        "    private + '/lib/python2.7/qpyutil.zip', \n" \
-		"    private + '/lib/python2.7/lib-dynload/', \n" \
-		"    public  + '/lib/python2.7/site-packages/', \n"
-		"    argument ]\n" \
-        "import androidembed\n" \
-        "class LogFile(object):\n" \
-        "    def __init__(self):\n" \
-        "        self.buffer = ''\n" \
-        "    def write(self, s):\n" \
-        "        s = s.replace(\"\\0\", \"\\\\0\")\n" \
-        "        s = self.buffer + s\n" \
-        "        lines = s.split(\"\\n\")\n" \
-		"        output = open(logfile,\"w\")\n" \
-        "        for l in lines[:-1]:\n" \
-        "            androidembed.log(l)\n" \
-		"            output.write(\"%s\\n\" % (l,))\n" \
-		"        output.close()\n" \
-        "        self.buffer = lines[-1]\n" \
-        "    def flush(self):\n" \
-        "        return\n" \
-        "sys.stdout = sys.stderr = LogFile  ()\n" \
-		"import time,site,qpy #print site.getsitepackages()\n"\
-		"#print '2...'\n"\
-		"#print '1...'\n"\
-		"#print 'Android path', sys.path\n" \
-        "#print 'Android bootstrap done. __name__ is', __name__\n"\
-        "print '# %s/%s started: %s' % (argument, posix.environ['ANDROID_MAIN'], time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))\n"
-		"import pygame_sdl2\n"\
-		"pygame_sdl2.import_as_pygame()\n"\
-    	"");
+    "sys.path[:] = [ \n" \
+    "    private + '/lib/python2.7/site-packages/', \n" \
+    "    private + '/lib/python2.7/', \n" \
+    "    private + '/lib/python27.zip', \n" \
+    "    private + '/lib/notebook.zip', \n" \
+    "    private + '/lib/python2.7/qpyutil.zip', \n" \
+    "    private + '/lib/python2.7/lib-dynload/', \n" \
+    "    public  + '/lib/python2.7/site-packages/', \n" \
+    "    argument ]\n" \
+    "import androidembed\n" \
+    "class LogFile(object):\n" \
+    "    def __init__(self):\n" \
+    "        self.buffer = ''\n" \
+    "    def write(self, s):\n" \
+    "        s = s.replace(\"\\0\", \"\\\\0\")\n" \
+    "        s = self.buffer + s\n" \
+    "        lines = s.split(\"\\n\")\n" \
+    "        output = open(logfile,\"w\")\n" \
+    "        for l in lines[:-1]:\n" \
+    "            androidembed.log(l)\n" \
+    "            output.write(\"%s\\n\" % (l,))\n" \
+    "        output.close()\n" \
+    "        self.buffer = lines[-1]\n" \
+    "    def flush(self):\n" \
+    "        return\n" \
+    "sys.stdout = sys.stderr = LogFile()\n" \
+    "import time,site;import qpy\n"\
+    "print('# %s/%s started: %s' % (argument, posix.environ['ANDROID_MAIN'], time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))\n" \
+    "import pygame_sdl2\n"\
+    "pygame_sdl2.import_as_pygame()\n"\
+    "");
 
     /* run it !
      */
