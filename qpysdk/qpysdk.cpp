@@ -36,7 +36,7 @@ int CreateSubprocess(const char* cmd, char* args[], char* vars[], char *wkdir, p
   char* devname;
   int ptm = open("/dev/ptmx", O_RDWR);
   if(ptm < 0){
-    LOGE("Cannot open /dev/ptmx: %s\n", strerror(errno));
+    //LOGE("Cannot open /dev/ptmx: %s\n", strerror(errno));
     return -1;
   }
   fcntl(ptm, F_SETFD, FD_CLOEXEC);
@@ -45,13 +45,13 @@ int CreateSubprocess(const char* cmd, char* args[], char* vars[], char *wkdir, p
   if (unlockpt(ptm) ||
 
   ((devname = (char*) ptsname(ptm)) == 0)) {
-    LOGE("Trouble with /dev/ptmx: %s\n", strerror(errno));
+    //LOGE("Trouble with /dev/ptmx: %s\n", strerror(errno));
     return -1;
   }
 
   *pid = fork();
   if(*pid < 0) {
-    LOGE("Fork failed: %s\n", strerror(errno));
+    //LOGE("Fork failed: %s\n", strerror(errno));
     return -1;
   }
 
